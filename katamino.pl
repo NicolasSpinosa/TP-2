@@ -35,14 +35,25 @@ coordenadas(T, (I, J)) :-
     between(1, C, J).
 
 % EJ 5
+partes([], []).
+partes([X|Xs], [X|Ys]) :- partes(Xs, Ys).
+partes([_|Xs], Ys) :- partes(Xs, Ys).
+
+kPiezas(K, PS) :-
+    nombrePiezas(L),
+    partes(L, PS),
+    length(PS, K).
 
 % EJ 6
 % seccionTablero(+T, +ALTO, +ANCHO, +IJ, ?ST)
+armarSeccion(Rs, _, _, []) :- is_list(Rs).
+armarSeccion([R|Rs], ANCHO, J, [ST|STs]) :-
+    Descartar is J - 1,
+    sublista(Descartar, ANCHO, R, ST),
+    armarSeccion(Rs, ANCHO, J, STs).
+
 seccionTablero(T, ALTO, ANCHO, (I, J), ST) :-
-    length(ST, ALTO),
-    between(1, ALTO, FId),
-    nth1(FId, ST, R),
-    FIdT is FId + I - 1,
-    nth1(FIdT, T, F),
-    Descarte is J - 1,
-    sublista(Descarte, ANCHO, F, R).
+    Descartar is I - 1,
+    sublista(Descartar, ALTO, T, R),
+    armarSeccion(R, ANCHO, J, ST),
+    length(ST, ALTO).
